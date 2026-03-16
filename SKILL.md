@@ -16,26 +16,43 @@ metadata:
 
 # Wallpaper Claw Skill
 
-Generate AI wallpapers sized perfectly for any device.
+Generate stunning AI wallpapers sized perfectly for any device — mobile, desktop, ultrawide, or iPad — in a single command.
 
-## Commands
+## Helper script
 
 ```bash
-node wallpaper.js gen <prompt> [--device mobile|desktop|ultrawide|ipad] [--char name] [--style name]
+node wallpaper.js gen "<prompt>" [--device mobile|desktop|ultrawide|ipad] [--char <name>] [--style <name>]
+# → {"status":"SUCCESS","url":"https://...","width":576,"height":1024}
 ```
+
+The agent handles all prompt crafting and style decisions. The script only calls the image generation API.
 
 ## Device Presets
 
-| Device | Size | Ratio |
-|--------|------|-------|
-| `mobile` | 576×1024 | 9:16 |
-| `desktop` | 1024×576 | 16:9 |
-| `ultrawide` | 1024×432 | 21:9 |
-| `ipad` | 768×1024 | 3:4 |
+| Device | Size | Ratio | Best for |
+|--------|------|-------|---------|
+| `mobile` | 576×1024 | 9:16 | iPhone, Android lock screens |
+| `desktop` | 1024×576 | 16:9 | Monitor backgrounds |
+| `ultrawide` | 1024×432 | 21:9 | Ultrawide monitors |
+| `ipad` | 768×1024 | 3:4 | iPad home/lock screens |
+
+## Usage Examples
+
+```bash
+# Mobile wallpaper
+node wallpaper.js gen "misty mountain at sunrise, soft pink sky" --device mobile
+
+# Desktop wallpaper with style
+node wallpaper.js gen "futuristic city at night" --device desktop --style cyberpunk
+
+# Character wallpaper
+node wallpaper.js gen "standing in forest" --device mobile --char "Aria"
+```
 
 ## Setup
+
+Add your token to `~/.openclaw/workspace/.env`:
 
 ```
 NETA_TOKEN=your_token_here
 ```
-in `~/.openclaw/workspace/.env`
