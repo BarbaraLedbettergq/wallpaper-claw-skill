@@ -129,6 +129,16 @@ node wallpaper.js gen "<prompt>" \
 }
 ```
 
+## Install
+
+```bash
+# Via OpenClaw
+clawhub install wallpaper-claw-skill
+
+# Via skills CLI (Claude Code, Cursor, Copilot, and 38+ agents)
+npx skills add BarbaraLedbettergq/wallpaper-claw-skill
+```
+
 ## Setup
 
 Add your API token to `~/.openclaw/workspace/.env`:
