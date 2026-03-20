@@ -1,147 +1,88 @@
-![banner](./banner.webp)
+# AI Wallpaper Generator
 
-<!--skill-metadata
-name: wallpaper-claw-skill
-description: Generate stunning AI wallpapers for mobile, desktop, ultrawide, and iPad.
-emoji: "🖼️"
-requires: [NETA_TOKEN, node]
--->
-
-# Wallpaper Claw Skill
-
-> Core tool: `node wallpaper.js` — generates perfectly-sized AI wallpapers for any device.
+Generate stunning AI-powered wallpaper images from a text description in seconds. Powered by the Neta talesofai API, this skill returns a direct image URL you can use anywhere.
 
 ---
-
-## 0. Initialization
-
-On trigger, **immediately output**:
-```
-🖼️ Wallpaper generator ready. What do you want on your screen?
-```
-
-**Trigger conditions:**
-- User says: wallpaper / background / lockscreen / homescreen / desktop background
-- User says: "make me a wallpaper of..." / "generate a phone wallpaper"
-
----
-
-## 1. Device Selection
-
-If the user doesn't specify a device, ask:
-
-```
-Which device is this for?
-```
-
-Quick buttons:
-- `📱 Mobile` → `@{bot_name} mobile wallpaper`
-- `🖥️ Desktop` → `@{bot_name} desktop wallpaper`
-- `📺 Ultrawide` → `@{bot_name} ultrawide wallpaper`
-- `📋 iPad` → `@{bot_name} ipad wallpaper`
-
-| Device | Size | Best for |
-|--------|------|----------|
-| `mobile` | 576×1024 (9:16) | iPhone, Android |
-| `desktop` | 1024×576 (16:9) | Laptop, monitor |
-| `ultrawide` | 1024×432 (21:9) | Ultrawide monitor |
-| `ipad` | 768×1024 (3:4) | iPad, tablet |
-
----
-
-## 2. Generation
-
-```bash
-node wallpaper.js gen "<prompt>" --device mobile
-# stderr: 📱 Generating Mobile (9:16) wallpaper...
-# stderr: 🎨 Rendering at 576×1024...
-# stderr: ⏳ Task submitted: xxx
-# stdout: {"status":"SUCCESS","url":"https://...","device":"mobile","width":576,"height":1024}
-```
-
-With character:
-```bash
-node wallpaper.js gen "standing on a rooftop at sunset" --device mobile --char "character name" --style "cinematic"
-```
-
----
-
-## 3. Display Result
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━
-🖼️ Your {device} wallpaper is ready!
-{image_url}
-━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-Quick buttons:
-- `Try another style 🎨` → `@{bot_name} same scene, different style`
-- `Other device 📱` → `@{bot_name} make it for desktop`
-- `New wallpaper 🔄` → `@{bot_name} generate a new wallpaper`
-
----
-
-## 4. Style Quick Picks
-
-| Style | Prompt keyword |
-|-------|---------------|
-| 🌌 Space | "galaxy, nebula, stars, cosmic" |
-| 🌊 Ocean | "ocean waves, deep sea, underwater" |
-| 🏔️ Nature | "mountain landscape, forest, misty" |
-| 🌆 City | "city skyline, neon lights, night" |
-| 🎨 Abstract | "abstract art, geometric, colorful" |
-| 🌸 Minimal | "minimalist, soft pastel, clean" |
-| 🔥 Dark | "dark fantasy, dramatic shadows" |
-| ☀️ Bright | "vibrant, sunny, warm tones" |
-
----
-
-## 5. Error Handling
-
-| Error | Message |
-|-------|---------|
-| Token missing | "Add `NETA_TOKEN=...` to `~/.openclaw/workspace/.env`" |
-| status=FAILURE | ⚠️ Generation failed — try simplifying the prompt |
-| status=TIMEOUT | ⏳ Timed out — retry with the same prompt |
-
----
-
-## CLI Reference
-
-```bash
-node wallpaper.js gen "<prompt>" \
-  --device  mobile        \   # mobile | desktop | ultrawide | ipad
-  --char    "<name>"      \   # optional character
-  --pic     "<uuid>"      \   # optional character reference image
-  --style   "cinematic"       # optional, repeatable
-```
-
-**Output (JSON):**
-```json
-{
-  "status": "SUCCESS",
-  "url": "https://oss.talesofai.cn/picture/<task_uuid>.webp",
-  "task_uuid": "...",
-  "device": "mobile",
-  "width": 576,
-  "height": 1024
-}
-```
 
 ## Install
 
+**Via npx skills:**
 ```bash
-# Via OpenClaw
-clawhub install wallpaper-claw-skill
-
-# Via skills CLI (Claude Code, Cursor, Copilot, and 38+ agents)
 npx skills add BarbaraLedbettergq/wallpaper-claw-skill
 ```
 
-## Setup
+**Via ClawHub:**
+```bash
+clawhub install wallpaper-claw-skill
+```
 
-Add your API token to `~/.openclaw/workspace/.env`:
+---
+
+## Usage
+
+```bash
+# Use the default prompt
+node wallpaperclaw.js
+
+# Custom prompt
+node wallpaperclaw.js "misty mountain range at golden hour"
+
+# Specify size
+node wallpaperclaw.js "cyberpunk city at night" --size landscape
+
+# Use a reference image UUID
+node wallpaperclaw.js "same style, different scene" --ref <picture_uuid>
+
+# Pass token directly
+node wallpaperclaw.js "aurora borealis over a frozen lake" --token YOUR_TOKEN
+```
+
+The script prints a single image URL to stdout on success.
+
+---
+
+## Options
+
+| Flag | Values | Default | Description |
+|------|--------|---------|-------------|
+| `--size` | `square`, `portrait`, `landscape`, `tall` | `landscape` | Output image dimensions |
+| `--style` | `anime`, `cinematic`, `realistic` | `cinematic` | Visual style (passed in prompt) |
+| `--ref` | `<picture_uuid>` | — | Reference image UUID for style inheritance |
+| `--token` | `<token>` | — | Override token resolution |
+
+### Size reference
+
+| Name | Dimensions |
+|------|------------|
+| `square` | 1024 × 1024 |
+| `portrait` | 832 × 1216 |
+| `landscape` | 1216 × 832 |
+| `tall` | 704 × 1408 |
+
+---
+
+## Token setup
+
+The script resolves your `NETA_TOKEN` in this order:
+
+1. `--token` CLI flag
+2. `NETA_TOKEN` environment variable
+3. `~/.openclaw/workspace/.env` — line matching `NETA_TOKEN=...`
+4. `~/developer/clawhouse/.env` — line matching `NETA_TOKEN=...`
+
+**Recommended:** add your token to `~/.openclaw/workspace/.env`:
 ```
 NETA_TOKEN=your_token_here
 ```
+
+---
+
+## Example output
+
+```
+https://cdn.talesofai.cn/artifacts/abc123.jpg
+```
+
+---
+
+Built with Claude Code · Powered by Neta
