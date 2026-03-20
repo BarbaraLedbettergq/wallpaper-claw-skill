@@ -86,3 +86,13 @@ https://cdn.talesofai.cn/artifacts/abc123.jpg
 ---
 
 Built with Claude Code · Powered by Neta
+
+## Example Output
+
+```bash
+node wallpaperclaw.js "stunning desktop wallpaper, ultra detailed, 4K quality"
+```
+
+![Example output](https://oss.talesofai.cn/picture/951f5a91-9be2-4af1-8429-8c79e786798d.webp)
+
+> Prompt: *"stunning desktop wallpaper, ultra detailed, 4K quality"*
